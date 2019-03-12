@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>修改学生 - 小小学生管理系统V2</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!-- FONT AWESOME ICONS  -->
+    <link href="/css/font-awesome.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE  -->
+    <link href="/css/style.css" rel="stylesheet" />
+    <style type="text/css">
+        .alert{
+            padding: 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER END-->
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">
+                    <h1>学生管理系统V2</h1>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- LOGO HEADER END-->
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse ">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="/">所有学生</a>
+                            </li>
+                            <li>
+                                <a href="/add">增加学生</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-head-line">修改学生</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <p>学号：</p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="sid" value="<%= info.sid %>" disabled></p>
+                    <div class="alert alert-danger" role="alert" id="sid_tip" style="display:none;">学号已经存在，请检查！</div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-1">
+                    <p>姓名：</p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="name" value="<%= info.name %>"></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <p>年龄：</p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="age" value="<%= info.age %>"></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <p>性别：</p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <label>
+                            <input type="radio"  value="男" name="sex" <% if(info.sex=='男'){ %>
+                            checked
+                            <% } %>>男</label>
+                        <label>
+                            <input type="radio"  value="女" name="sex" <% if(info.sex=='女'){ %>
+                            checked
+                            <% } %>>女</label>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <button class="btn btn-success" id="btn">提交</button>
+                </div>
+            </div>
+        </div>
+        <!--  end  Context Classes  --> </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript">
+    //点击提交按钮的时候做的事情
+    $("#btn").click(function(){
+        var  sid = parseInt($("input[name=sid]").val());
+
+        $.post("/student/" + sid,{
+            name : $("input[name=name]").val(),
+            age : parseInt($("input[name=age]").val()),
+            sex : $("input[name=sex]:checked").val()
+        },function(data){
+            if(data.result == 1){
+                alert("修改成功！");
+                window.location = "/";
+            }else{
+                alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+            }
+        })
+    });
+</script>
+ 
+
+<div id="add-div-main">
+
+<div class="add-wrapper-db">
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="add-block"></div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 text-center">
+            <div class="add-block" id="ftr-large-add"  >
+                <center></center>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

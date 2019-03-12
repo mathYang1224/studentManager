@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>小小学生管理系统V2</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!-- FONT AWESOME ICONS  -->
+    <link href="/css/font-awesome.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE  -->
+    <link href="/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+</head>
+<body>
+
+    <!-- HEADER END-->
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">
+                    <h1>学生管理系统V2</h1>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- LOGO HEADER END-->
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse ">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+                            <li>
+                                <a class="menu-top-active" href="/">所有学生</a>
+                            </li>
+                            <li>
+                                <a href="/add">增加学生</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- MENU SECTION END-->
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-head-line">所有学生</h1>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!--   Basic Table  -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">学生清单</div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>学号</th>
+                                            <th>姓名</th>
+                                            <th>性别</th>
+                                            <th>年龄</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody"></tbody>
+                                </table>
+                            </div>
+
+                            <div id="pagenavbox"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="js/PageNav.js"></script>
+    <script type="text/javascript">
+    
+
+    //事件委托，事件委托是制作动态事件绑定最简单的方法
+    //删除按钮
+    $("#tbody").delegate(".delbtn","click",function(){
+        if(!confirm("真的要删除么")){
+            return;
+        }
+
+        var sid = $(this).attr("data-sid");
+        var $this = $(this);
+
+        $.ajax({
+            url : "/student/" + sid,
+            type : "delete",
+            success : function(data){
+                if(data.result == 1){
+                    alert("删除成功");
+                    $this.parents("tr").remove();
+                }else{
+                    alert("服务器错误！");
+                }
+            }
+        });
+    });
+
+
+    //修改按钮
+    $("#tbody").delegate(".modbtn","click",function(){
+        var sid = $(this).attr("data-sid");
+        window.location = "/student/" + sid;
+    });
+
+    //请求一次，创建分页条
+    $.get("/student?page=1",function(data){
+        //分页条
+        new PageNav({
+            boxid : "pagenavbox",
+            page : 1,
+            pageAmount : data.pageAmount,
+            change : function(pagenumber){
+                gotopage(pagenumber);
+            }
+        });
+
+        gotopage(1);
+    });
+
+
+    //Ajax请求，请求JSON数据
+    function gotopage(pagenumber){
+        //清空
+        $("#tbody").empty();
+
+        //获得新的数据
+        $.get("/student?page=" + pagenumber,function(data){
+            $.each(data.results,function(i, n){
+                //创建一个tr标签
+                $tr = $("<tr></tr>");
+                $("<td></td>").html(n.sid).appendTo($tr);
+                $("<td></td>").html(n.name).appendTo($tr);
+                $("<td></td>").html(n.sex).appendTo($tr);
+                $("<td></td>").html(n.age).appendTo($tr);
+                $("<td><input type='button' class='btn btn-danger delbtn' value='删除' data-sid='" + n.sid +"'/> <input type='button' class='btn btn-warning modbtn' value='修改' data-sid='" + n.sid + "'/></td>").appendTo($tr);
+                //上树
+                $tr.appendTo($("#tbody"));
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
